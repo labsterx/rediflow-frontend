@@ -33,10 +33,20 @@ const router = createRouter({
           component: () => import('../views/app/AppHomeView.vue'),
         },
         {
+          path: 'user/',
+          name: 'UserDefault',
+          component: () => import('../views/app/UserView.vue'),
+        },          
+        {
+          path: 'user/:userAddress',
+          name: 'User',
+          component: () => import('../views/app/UserView.vue'),
+        },
+        {
           path: 'video/:assetId',
           name: 'Video',
           component: () => import('../views/app/LivepeerVideoView.vue'),
-        },
+        },                
         {
           path: 'logout/',
           name: 'Logout',
@@ -45,6 +55,14 @@ const router = createRouter({
       ],
     },
 
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import('../views/AboutView.vue')
+    // }
   ]
 })
 

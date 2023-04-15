@@ -25,6 +25,7 @@
 import HeaderApp from "@/components/ui/HeaderApp.vue"
 import FooterApp from "@/components/ui/FooterApp.vue"
 import Preloader from "@/components/ui/Preloader.vue"
+import LivepeerVideoList from "@/components/LivepeerVideoList.vue"
 import axios from '@/axios'
 import { config } from '@/config/index.js'
 export default {
@@ -32,6 +33,7 @@ export default {
     HeaderApp,
     FooterApp,
     Preloader,
+    LivepeerVideoList,
 },
   data: () => ({
     loading: true,

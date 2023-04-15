@@ -1,4 +1,5 @@
-const backendURL = 'http://localhost:5097'
+// const backendURL = 'http://localhost:5097'
+const backendURL = 'https://api.rediflow.co'
 
 export const config = {
   supportedNetworks: {
@@ -29,6 +30,28 @@ export const config = {
     chainChange: 'Logout',
     accountChange: 'Logout',
   },
+  api: {
+    livepeer: {
+      url: 'https://api.thegraph.com/subgraphs/name/livepeer/livepeer-canary',
+    },
+  },
+  superfluid: {
+    tokenAccepted: {
+      1: [ 'USDCx', 'DAIx' ],
+      5: [ 'fDAIx', 'fUSDCx', 'fTUSD' ],
+      137: [ 'USDCx', 'DAIx' ],
+      80001: [ 'fUSDCx', 'fTUSDx', 'fDAIx' ],
+    }
+  },
+  featuredVideos: [
+    {
+      assetId: "c3480487-dd69-41bb-a6ee-b55aeed2b184",
+      created: "2023-04-11T06:14:19.253Z",
+      isReady: true,
+      name: "My Vlog",
+      ownerAddress: "0x06a6b65d93cdd5026729973d835716ba0450b002",
+    }
+  ],
   network: {
     1: {
       id: 1,
