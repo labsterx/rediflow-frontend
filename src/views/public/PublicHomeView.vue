@@ -82,7 +82,7 @@ import FooterPublic from "@/components/ui/FooterPublic.vue"
 
 <style scoped>
 .cover-banner {
-  background: linear-gradient( rgba(0,0,0,0.45),rgba(0,0,0,0.55) ),url(/images/cover-bg.jpg) 50% 0px no-repeat;
+  background: linear-gradient( rgba(0,0,0,0.85),rgba(0,0,0,0.45) ),url(/images/cover-bg.jpg) 50% 0px no-repeat;
   padding-top: 200px;
 }
 .text-color-accent {
