@@ -13,7 +13,7 @@ import FooterPublic from "@/components/ui/FooterPublic.vue"
 
         <div class="mx-auto text-center">
           <v-col cols="auto">
-            <v-btn to="/login/" size="x-large" dark color="red-darken-2">Enter</v-btn>
+            <v-btn :to="{name: 'Login'}" size="x-large" dark color="red-darken-2">Enter</v-btn>
           </v-col>
         </div>
       </div>
