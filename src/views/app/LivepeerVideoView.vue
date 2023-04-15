@@ -18,42 +18,78 @@
           />
         </div>
 
+        <div v-if="thisIsMyself">
+          <LivepeerVideoUpdate
+            :assetId="assetId"
+            :name="videoTitle"
+            :ownerAddress="ownerAddress"
+            :myAddress="myAddress"
+            :isPaid="isPaid"
+            :isReady="isReady"
+          />
+        </div>
+
         <div v-if="videoURL">
 
-          <div v-if="isPaidAsset">
-
-            <SuperfluidMoneyStreaming
-              v-if="!thisIsMyself"
-              ref="superfluidComponent"
-              :recipientAddress="ownerAddress"
-              superTokenName="fUSDCx"
-              :flowRate="10"
-              :keepCheckingStatus="false"
-              :statusCheckingInterval="60000"
-              @streaming-money-status-update="onStreamingMoneyStatusUpdate"
-            />
-
-            <div v-if="isPaying || thisIsMyself">
+          <div v-if="thisIsMyself">
               <VideoPlayer
                 :src="videoURL"
                 :title="videoTitle"
                 :width="videoWidth"
                 :height="videoHeight"
                 style="max-width: 100%;"
-              />              
+              /> 
+          </div>
+
+          <div v-else>
+
+            <div v-if="isPaid">
+
+              <SuperfluidMoneyStreaming
+                v-if="!thisIsMyself"
+                ref="superfluidComponent"
+                :recipientAddress="ownerAddress"
+                superTokenName="fUSDCx"
+                :flowRate="10"
+                :keepCheckingStatus="false"
+                :statusCheckingInterval="60000"
+                @streaming-money-status-update="onStreamingMoneyStatusUpdate"
+              />
+
+              <div v-if="isPaying || thisIsMyself">
+                <VideoPlayer
+                  :src="videoURL"
+                  :title="videoTitle"
+                  :width="videoWidth"
+                  :height="videoHeight"
+                  style="max-width: 100%;"
+                />              
+              </div>
+
+              <div v-else>
+                <v-card class="mx-3 my-3 px-3 py-3">
+                  <v-img
+                    src="/images/video-cover-paid-content.jpg"
+                    :aspect-ratio="16/9"
+                  ></v-img>
+                </v-card>
+              </div>
+
             </div>
 
             <div v-else>
-              <v-card class="mx-3 my-3 px-3 py-3">
-                <v-img
-                  src="/images/video-cover-paid-content.jpg"
-                  :aspect-ratio="16/9"
-                ></v-img>
-              </v-card>
+              <VideoPlayer
+                :src="videoURL"
+                :title="videoTitle"
+                :width="videoWidth"
+                :height="videoHeight"
+                style="max-width: 100%;"
+              /> 
             </div>
 
           </div>
 
+          
         </div>
 
         <div v-else>
@@ -78,6 +114,7 @@ import Preloader from "@/components/ui/Preloader.vue"
 import VideoPlayer from "@/components/VideoPlayer.vue"
 import UserSummary from "@/components/ui/UserSummary.vue"
 import SuperfluidMoneyStreaming from "@/components/SuperfluidMoneyStreaming.vue"
+import LivepeerVideoUpdate from "@/components/LivepeerVideoUpdate.vue"
 import axios from '@/axios'
 import { config } from '@/config/index.js'
 export default {
@@ -88,6 +125,7 @@ export default {
     VideoPlayer,
     UserSummary,
     SuperfluidMoneyStreaming,
+    LivepeerVideoUpdate
   },
   data: () => ({
     loading: true,
@@ -99,7 +137,8 @@ export default {
     videoTitle: null,
     videoInfo: null,
     playbackInfo: null,
-    isPaidAsset: false,
+    isPaid: null,
+    isReady: null,
     isPaying: false,
   }),
   computed: {
@@ -135,6 +174,9 @@ export default {
       this.isPaying = status;
     },
 
+    // -----------------------------------------------------------------
+    // Get Asset Info
+    // -----------------------------------------------------------------
     async getAssetInfo() {
 
       if (!this.assetId) {
@@ -151,13 +193,15 @@ export default {
         this.videoInfo = res.data;
         this.videoTitle = res.data.name;
         this.ownerAddress = res.data.ownerAddress;
+        this.isPaid = res.data.isPaid;
+        this.isReady = res.data.isReady;
 
         if (!res.data.playbackId) {
           console.log('No playbackId');
           return;
         }
         const playbackId = res.data.playbackId;
-        this.isPaidAsset = true;  // HACK!
+        
 
         const url1 = 'https://livepeer.studio/api/playback/' + playbackId;
         const res1 = await axios.get(url1);

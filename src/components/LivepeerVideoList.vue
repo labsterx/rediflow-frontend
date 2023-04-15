@@ -12,6 +12,7 @@
         :assetId="item.assetId"
         :name="item.name"
         :ownerAddress="item.ownerAddress"
+        :isPaid="item.isPaid"
       >
       </LivepeerVideoSummaryCard>
 
@@ -86,7 +87,28 @@ export default {
 
     async getFeaturedVideoList() {
   
-        this.videoList = config.featuredVideos
+      const requestUrl = config.backendAPIURL + '/livepeer/featured-videos';
+      this.videoList = [];
+            
+      try {
+        
+        const res = await axios.get(requestUrl);
+        console.log(res.data)
+        for (let i = 0; i < res.data.length; i++) {
+          if (this.onlyShowReady) {
+            if (res.data[i].isReady) {
+              this.videoList.push(res.data[i])
+            }
+          } else {
+            this.videoList.push(res.data[i])
+          }
+        }
+
+      } catch (error) {
+        console.error('Error:', error)
+      } finally {
+        //
+      }
 
     },
 

@@ -1,5 +1,5 @@
-// const backendURL = 'http://localhost:5097'
-const backendURL = 'https://api.rediflow.co'
+const backendURL = 'http://localhost:5097'
+// const backendURL = 'https://api.rediflow.co'
 
 export const config = {
   supportedNetworks: {
