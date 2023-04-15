@@ -31,7 +31,12 @@ const router = createRouter({
           path: '',
           name: 'AppHome',
           component: () => import('../views/app/AppHomeView.vue'),
-        },               
+        },
+        {
+          path: 'video/:assetId',
+          name: 'Video',
+          component: () => import('../views/app/LivepeerVideoView.vue'),
+        },
         {
           path: 'logout/',
           name: 'Logout',
