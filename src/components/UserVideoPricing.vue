@@ -4,14 +4,17 @@
     <Preloader />
   </div>
   <div v-else>
-    UserVideoPricing for {{ userAddress }}:
+    
+    <div class="float-left">
+      <strong>Video Pricing</strong>:
+      <span v-if="currrentPricingInfo"> {{ currrentPricingInfo.pricePerHour.toString() }} {{ currrentPricingInfo.tokenName }}</span>
+      <span v-else> Free </span>
+    </div>
 
-    <div v-if="isMyself">
+    <div v-if="isMyself" class="float-right">
 
       <div v-if="currrentPricingInfo">
       
-        <div>Current Price: {{ currrentPricingInfo.pricePerHour.toString() }} {{ currrentPricingInfo.tokenName }}</div>
-
           <!----------- BEGIN Update Pricing ---------->
           <v-dialog
             v-model="dialogUpdatePricing"
@@ -20,9 +23,11 @@
           >
             <template v-slot:activator="{ props }">
               <v-btn
-                color="info"
                 v-bind="props"
+                color="blue-darken-2"
                 class="mx-2"
+                size="small"
+                variant="flat"
               >
                 Update Pricing
               </v-btn>
@@ -86,8 +91,11 @@
           >
             <template v-slot:activator="{ props }">
               <v-btn
-                color="warning"
                 v-bind="props"
+                color="pink-darken-2"
+                class="mx-2"
+                size="small"
+                variant="flat"                
               >
                 Delete Pricing
               </v-btn>

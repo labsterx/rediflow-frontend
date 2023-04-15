@@ -4,100 +4,134 @@
   <v-main>
     <v-container>
 
-      <div v-if="loading">
-        <Preloader />
-      </div>
+      <v-row no-gutters>
+        <v-col>
+          <v-sheet class="pa-2 ma-2">
 
-      <div v-else>
 
-        <div class="my-2">
-          {{ videoTitle }}
-          <UserSummary
-            class="ml-2" 
-            :address="ownerAddress"
-          />
-        </div>
-
-        <div v-if="thisIsMyself">
-          <LivepeerVideoUpdate
-            :assetId="assetId"
-            :name="videoTitle"
-            :ownerAddress="ownerAddress"
-            :myAddress="myAddress"
-            :isPaid="isPaid"
-            :isReady="isReady"
-          />
-        </div>
-
-        <div v-if="videoURL">
-
-          <div v-if="thisIsMyself">
-              <VideoPlayer
-                :src="videoURL"
-                :title="videoTitle"
-                :width="videoWidth"
-                :height="videoHeight"
-                style="max-width: 100%;"
-              /> 
-          </div>
-
-          <div v-else>
-
-            <div v-if="isPaid">
-
-              <SuperfluidMoneyStreaming
-                v-if="!thisIsMyself"
-                ref="superfluidComponent"
-                :recipientAddress="ownerAddress"
-                superTokenName="fUSDCx"
-                :flowRate="10"
-                :keepCheckingStatus="false"
-                :statusCheckingInterval="60000"
-                @streaming-money-status-update="onStreamingMoneyStatusUpdate"
-              />
-
-              <div v-if="isPaying || thisIsMyself">
-                <VideoPlayer
-                  :src="videoURL"
-                  :title="videoTitle"
-                  :width="videoWidth"
-                  :height="videoHeight"
-                  style="max-width: 100%;"
-                />              
-              </div>
-
-              <div v-else>
-                <v-card class="mx-3 my-3 px-3 py-3">
-                  <v-img
-                    src="/images/video-cover-paid-content.jpg"
-                    :aspect-ratio="16/9"
-                  ></v-img>
-                </v-card>
-              </div>
-
+            <div v-if="loading">
+              <Preloader />
             </div>
 
             <div v-else>
-              <VideoPlayer
-                :src="videoURL"
-                :title="videoTitle"
-                :width="videoWidth"
-                :height="videoHeight"
-                style="max-width: 100%;"
-              /> 
+
+              <div class="text-h5 font-weight-bold my-2">
+                <v-chip v-if="isPaid" size="small" color="red-darken-3" class="mb-1">Paid</v-chip>
+                <v-chip v-else size="small" color="green-darken-3" class="mb-1">Free</v-chip>
+                {{ videoTitle }}
+              </div>
+
+              <div v-if="videoURL">
+
+                <div v-if="thisIsMyself">
+                    <VideoPlayer
+                      :src="videoURL"
+                      :title="videoTitle"
+                      :width="videoWidth"
+                      :height="videoHeight"
+                      style="max-width: 100%;"
+                    /> 
+                </div>
+
+                <div v-else>
+
+                  <div v-if="isPaid">
+
+                    <SuperfluidMoneyStreaming v-if="!thisIsMyself"
+                      class="my-2"
+                      ref="superfluidComponent"
+                      :recipientAddress="ownerAddress"
+                      :superTokenName="tokenName"
+                      :pricePerHour="pricePerHour"
+                      :keepCheckingStatus="false"
+                      :statusCheckingInterval="60000"
+                      @streaming-money-status-update="onStreamingMoneyStatusUpdate"
+                    />
+
+                    <div v-if="isPaying || thisIsMyself">
+                      <VideoPlayer
+                        :src="videoURL"
+                        :title="videoTitle"
+                        :width="videoWidth"
+                        :height="videoHeight"
+                        style="max-width: 100%;"
+                      />              
+                    </div>
+
+                    <div v-else>
+                        <v-img
+                          src="/images/video-cover-paid-content.jpg"
+                          :aspect-ratio="16/9"
+                        ></v-img>
+                    </div>
+
+                  </div>
+
+                  <div v-else>
+                    <VideoPlayer
+                      :src="videoURL"
+                      :title="videoTitle"
+                      :width="videoWidth"
+                      :height="videoHeight"
+                      style="max-width: 100%;"
+                    /> 
+                  </div>
+
+                </div>
+
+                <div class="float-left mt-3">
+                  By: 
+                  <UserSummary
+                    class="ml-2" 
+                    :address="ownerAddress"
+                    :myaddress="myAddress"
+                    markself
+                  />
+                </div>
+
+                <div v-if="thisIsMyself" class="float-right mt-4">
+                  <LivepeerVideoUpdate
+                    :assetId="assetId"
+                    :name="videoTitle"
+                    :ownerAddress="ownerAddress"
+                    :myAddress="myAddress"
+                    :isPaid="isPaid"
+                    :isReady="isReady"
+                  />
+                </div>
+                
+              </div>
+
+              <div v-else>
+                <div class="my-2">Video is not ready yet</div>
+                <div><v-btn @click="checkUploadedAssetStatus">Check Status</v-btn></div>
+              </div>
+
             </div>
 
-          </div>
 
-          
-        </div>
+          </v-sheet>
+        </v-col>
+        <v-col cols="3">
+          <v-sheet class="pa-2 ma-2">
+            
+            <div v-if="loading">
+              <Preloader />
+            </div>
 
-        <div v-else>
-          <div class="my-2">Video is not ready yet</div>
-          <div><v-btn @click="checkUploadedAssetStatus">Check Status</v-btn></div>
-        </div>
+            <div v-lese>
+              <LivepeerVideoList
+                type="new"
+                :myAddress="myAddress"
+              />
+            </div>
 
-      </div>
+          </v-sheet>
+        </v-col>
+      </v-row>
+
+
+      
 
     </v-container>
   </v-main>
@@ -115,6 +149,7 @@ import VideoPlayer from "@/components/VideoPlayer.vue"
 import UserSummary from "@/components/ui/UserSummary.vue"
 import SuperfluidMoneyStreaming from "@/components/SuperfluidMoneyStreaming.vue"
 import LivepeerVideoUpdate from "@/components/LivepeerVideoUpdate.vue"
+import LivepeerVideoList from "@/components/LivepeerVideoList.vue"
 import axios from '@/axios'
 import { config } from '@/config/index.js'
 export default {
@@ -125,12 +160,14 @@ export default {
     VideoPlayer,
     UserSummary,
     SuperfluidMoneyStreaming,
-    LivepeerVideoUpdate
+    LivepeerVideoUpdate,
+    LivepeerVideoList,
   },
   data: () => ({
     loading: true,
     ownerAddress: null,
     myAddress: null,
+    networkId: null,
     videoURL: null,
     videoWidth: null,
     videoHeight: null,
@@ -138,6 +175,8 @@ export default {
     videoInfo: null,
     playbackInfo: null,
     isPaid: null,
+    tokenName: null,
+    pricePerHour: null,
     isReady: null,
     isPaying: false,
   }),
@@ -163,6 +202,7 @@ export default {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
       this.myAddress = account.toLowerCase();
+      this.networkId = window.ethereum.networkVersion;
 
       await this.getAssetInfo();
 
@@ -184,7 +224,7 @@ export default {
         return;
       }
 
-      const requestUrl = config.backendAPIURL + '/livepeer/asset/' + this.assetId;
+      const requestUrl = config.backendAPIURL + '/livepeer/asset/' + this.networkId + '/' + this.assetId;
 
       try {
         
@@ -195,6 +235,15 @@ export default {
         this.ownerAddress = res.data.ownerAddress;
         this.isPaid = res.data.isPaid;
         this.isReady = res.data.isReady;
+
+        if (res.data.isPaid) {
+          if (res.data.tokenName) {
+            this.tokenName = res.data.tokenName;
+          }
+          if (res.data.pricePerHour) {
+            this.pricePerHour = res.data.pricePerHour;
+          }
+        }
 
         if (!res.data.playbackId) {
           console.log('No playbackId');

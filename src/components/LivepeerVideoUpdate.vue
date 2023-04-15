@@ -1,10 +1,6 @@
 <template>
   
-  <div class="py-1 px-2">
-
-    <div>
-      Video Updater: Name: {{  name  }}, Owner: {{  ownerAddress  }}, Paid: {{  isPaid  }}, Ready: {{  isReady  }}
-    </div>
+  <div>
 
     <!----------- BEGIN Update Video ---------->
     <v-dialog
@@ -14,7 +10,9 @@
     >
       <template v-slot:activator="{ props }">
         <v-btn
-          color="info"
+          size="small"
+          color="grey-darken-4"
+          variant="flat"
           v-bind="props"
           class="mx-2"
         >
@@ -55,7 +53,7 @@
             @click="updateVideo"
             block
             class="text-none mb-4"
-            color="indigo-darken-3"
+            color="grey-darken-4"
             size="x-large"
             variant="flat"
           >
@@ -75,7 +73,9 @@
     >
       <template v-slot:activator="{ props }">
         <v-btn
-          color="warning"
+          size="small"
+          color="pink-darken-2"
+          variant="flat"
           v-bind="props"
           class="mx-2"
         >
@@ -103,7 +103,7 @@
           @click="deleteVideo"
           block
           class="text-none mb-4"
-          color="red-darken-3"
+          color="pink-darken-4"
           size="x-large"
           variant="flat"
         >

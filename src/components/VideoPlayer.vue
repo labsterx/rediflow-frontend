@@ -1,17 +1,10 @@
 <template>
-  <v-card>
-    <v-card-text>
-      <v-card-title v-if="title" class="text-center my-3">
-        {{ title }}
-      </v-card-title>
-      <video 
-        ref="videoPlayer"
-        :width="width"
-        :height="height"
-        class="video-js vjs-default-skin vjs-fluid"
-      ></video>
-    </v-card-text>
-  </v-card>
+  <video 
+    ref="videoPlayer"
+    :width="width"
+    :height="height"
+    class="video-js vjs-default-skin vjs-fluid"
+  ></video>
 </template>
 
 <script>

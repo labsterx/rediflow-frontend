@@ -33,7 +33,7 @@ export default {
 <style scoped>
 .preloader {
   max-width: 300px;
-  margin: 100px auto;
+  margin: 10px auto;
   text-align: center;
   color: #26A65B;
 }

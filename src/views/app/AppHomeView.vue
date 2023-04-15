@@ -4,12 +4,15 @@
   <v-main>
     <v-container>
 
-      <h1>This is App Home Page</h1>
+      <div v-if="loading">
+        <Preloader />
+      </div>
 
-      <div class="mt-4">
+      <div v-else class="mt-4">
 
         <LivepeerVideoList
-          type="featured"
+          type="new"
+          :myAddress="myAddress"
         />
     
       </div>

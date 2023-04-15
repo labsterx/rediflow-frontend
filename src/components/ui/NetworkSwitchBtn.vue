@@ -10,7 +10,7 @@
       item-value="id"
       @update:modelValue="requestNetworkChange"
       label=""
-      bg-color="green-lighten-4"
+      bg-color="grey-lighten-4"
       density="compact"
       solo
       return-object

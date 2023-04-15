@@ -4,7 +4,6 @@
   <v-main>
     <v-container>
 
-      <h1>This is User Page</h1>
 
       <div v-if="loading">
         <Preloader />
@@ -12,39 +11,70 @@
 
       <div v-else>
 
-        <div class="mt-4">
-          User Address: {{ userAddress }}
-          <span v-if="thisIsMyself"> (myself)</span>
+        <v-card class="px-4 py-4 mt-3 mb-3">
+
+          <div class="float-left">
+            <v-avatar color="blue-lighten-4" size="80" class="mr-4">
+              <v-img
+                src="/images/account-head.png"
+                alt="John"
+              ></v-img>
+            </v-avatar>
+          </div>
+
+          <div class="flat-right pl-4">
+            <p><strong>User</strong><span v-if="thisIsMyself"> (myself)</span>:</p> 
+            <p>{{ userAddress }}</p>
+          </div>
+
+        </v-card>
+
+        <v-card class="px-4 py-4">
+
+         <div>
+            <div class="float-left">
+              <UserVideoPricing
+                :networkId="networkId"
+                :userAddress="userAddress"
+                :myAddress="myAddress"
+              />
+          </div>
+
+          <div v-if="!thisIsMyself"
+            class="flat-right pl-4 text-right"
+          >
+            <SuperfluidMoneyStreaming
+              :recipientAddress="userAddress"
+              superTokenName="fDAIx"
+              :flowRate="10"
+            />
+          </div>
+
         </div>
 
-        <UserVideoPricing
-          :networkId="networkId"
-          :userAddress="userAddress"
-          :myAddress="myAddress"
-        />
+        </v-card>
 
-        <SuperfluidMoneyStreaming
-          v-if="!thisIsMyself"
-          :recipientAddress="userAddress"
-          superTokenName="fDAIx"
-          :flowRate="10"
-        />
 
         <div class="mt-4">
-          <h2>Videos</h2>
+          <h3>Videos:
+            <LivepeerAssetUploader
+              v-if="thisIsMyself"
+              :userAddress="myAddress"
+              @new-video-ready="init" 
+            />
+
+          </h3>
+
         <LivepeerVideoList
+          class="my-4"
           type="ByOwner"
           :onlyShowReady="!thisIsMyself"
-          :ownerAddress="userAddress" 
+          :ownerAddress="userAddress"
+          :myAddress="myAddress"
         />
         </div>
 
-        <div v-if="thisIsMyself">
-          <LivepeerAssetUploader
-            :userAddress="myAddress"
-            @new-video-ready="init" 
-          />
-        </div>
+
 
       </div>
 
@@ -67,6 +97,7 @@ import LivepeerAssetUploader from "@/components/LivepeerAssetUploader.vue"
 import VideoPlayer from "@/components/VideoPlayer.vue"
 import LivepeerVideoList from "@/components/LivepeerVideoList.vue"
 import UserVideoPricing from "@/components/UserVideoPricing.vue"
+import UserSummary from "@/components/ui/UserSummary.vue"
 export default {
   components: {
     HeaderApp,
@@ -76,7 +107,8 @@ export default {
     LivepeerAssetUploader,
     VideoPlayer,
     LivepeerVideoList,
-    UserVideoPricing
+    UserVideoPricing,
+    UserSummary
 },
   data: () => ({
     loading: true,

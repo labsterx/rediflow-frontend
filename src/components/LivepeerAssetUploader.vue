@@ -7,8 +7,11 @@
 >
   <template v-slot:activator="{ props }">
     <v-btn
-      color="primary"
       v-bind="props"
+      color="blue-darken-2"
+      class="mx-2"
+      size="small"
+      variant="flat"      
     >
       Upload New Video
     </v-btn>

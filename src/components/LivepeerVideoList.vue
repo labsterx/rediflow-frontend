@@ -1,6 +1,6 @@
 <template>
   
-  <v-row v-if="!loading">
+  <v-row no-gutters v-if="!loading">
     <v-col
       v-for="(item, i) in videoList"
       :key="item.assetId"
@@ -12,6 +12,7 @@
         :assetId="item.assetId"
         :name="item.name"
         :ownerAddress="item.ownerAddress"
+        :myAddress="myAddress"
         :isPaid="item.isPaid"
       >
       </LivepeerVideoSummaryCard>
@@ -30,6 +31,7 @@ export default {
     type: { type: String, default: 'ByOwner'},
     onlyShowReady: { type: Boolean, default: true},
     ownerAddress: { type: String},
+    myAddress: { type: String, default: ''},
   },
   data: () => ({
     loading: true,
@@ -50,6 +52,9 @@ export default {
       else if (this.type === 'featured') {
         await this.getFeaturedVideoList()
       }
+      else if (this.type === 'new') {
+        await this.getNewVideoList()
+      }      
       this.loading = false
     },
 
@@ -89,7 +94,7 @@ export default {
   
       const requestUrl = config.backendAPIURL + '/livepeer/featured-videos';
       this.videoList = [];
-            
+
       try {
         
         const res = await axios.get(requestUrl);
@@ -112,7 +117,32 @@ export default {
 
     },
 
+  async getNewVideoList() {
+  
+    const requestUrl = config.backendAPIURL + '/livepeer/new-videos';
+    this.videoList = [];
 
+    try {
+      
+      const res = await axios.get(requestUrl);
+      console.log(res.data)
+      for (let i = 0; i < res.data.length; i++) {
+        if (this.onlyShowReady) {
+          if (res.data[i].isReady) {
+            this.videoList.push(res.data[i])
+          }
+        } else {
+          this.videoList.push(res.data[i])
+        }
+      }
+
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      //
+    }
+
+  },
 
   },
   created () {

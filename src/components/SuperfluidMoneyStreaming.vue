@@ -6,72 +6,117 @@
 
   <div v-else>
     
-    <v-banner
-      lines="one"
-      color="teal"
+    <v-btn v-if="isStreaming" 
+      class="mr-3"
+      prepend-icon="mdi-check-circle" 
+      size="small"
+      color="green-lighten-4"
+      variant="flat"
     >
-      <template v-slot:prepend>
-        <v-avatar
-          color="teal"
-          icon="mdi-account-filter"
-        ></v-avatar>
+      Currently Paying
+    </v-btn>
+
+    <v-btn v-else
+      class="mr-3"
+      size="small"
+      color="grey-lighten-2"
+      variant="flat"
+    >
+      Currently Not Paying
+    </v-btn>
+
+
+    <!----------- BEGIN Start Paying Dialog ---------->
+    <v-dialog
+      v-if="!isStreaming"
+      v-model="dialogStartPaying"
+      persistent
+      width="500"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          prepend-icon="mdi-menu-right"
+          size="small"
+          color="green-darken-2"
+          variant="flat"
+          v-bind="props"
+          class="mx-2"
+        >
+          Start Paying
+        </v-btn>
       </template>
+      <v-card
+        title="Ready to pay to watch video?"  
+      >
+        <template v-slot:append>
+          <div class="me-n2">
+            <v-btn
+              @click="dialogStartPaying = false"
+              icon="$close"
+              density="comfortable"
+              variant="plain"
+            ></v-btn>
+          </div>
+        </template>
+        <v-card-text>
 
-      <v-banner-text>
-        Superfluid Money Streaming:
-        <span v-if="startStreamLoading || stopStreamLoading">Updating...</span>
-        <span v-else>
-          <span v-if="isStreaming">ON</span>
-          <span v-else>OFF</span>
-        </span>
-        <div v-if="isStreaming">
-          <span>Current Balance of {{ superTokenName }} {{  tokenBalanceReadable }}</span><br />
+          <v-alert
+            color="amber-lighten-4"
+            icon="mdi-bitcoin"
+            prominent
+          >
+            <span class="text-body-2">In order to watch this video and other videos owned by this creator, you will need to pay a small amount of cryptocurrency, which will be charged to your account every second unless you stop paying. You can stop paying at any time.</span>
+          </v-alert>
+        <div class="text-body-2 mt-3">
+          <p>You will pay to: 
+            <UserSummary
+              class="ml-2"
+              fulladdress
+              :address="recipientAddress"
+            />
+          </p>
+          <p>You will pay in this token:
+            <v-chip size="small">{{ superTokenName }}</v-chip> 
+          </p>
+          <p>Price: <strong>{{ pricePerHour }}</strong> {{ superTokenName }} per hour
+            (<strong>{{ flowRate.toFixed(6) }}</strong> {{ superTokenName }} per second)
+          </p>
         </div>
-      </v-banner-text>
-
-      <v-banner-actions>
 
         <v-btn
-          class="mx-3"
-          v-if="isStreaming" 
-          prepend-icon="mdi-check-circle" 
-          variant="plain"
-        >
-          Currently Paying
-        </v-btn>
-
-        <v-btn
-          v-else 
-          class="mx-3"
-          variant="plain"
-        >
-          Currently Not Paying
-        </v-btn>
-
-        <v-btn
-          v-if="!isStreaming"
           :loading="startStreamLoading"
           :disabled="startStreamLoading"
-          color="success"
-          variant="tonal"
+          block
+          class="text-none my-4"
+          color="green-darken-4"
+          size="x-large"
+          variant="flat"
           @click="startMoneyStreaming"
           
         >
           Start Paying
         </v-btn>
 
-        <v-btn
-          v-else
-          :loading="stopStreamLoading"
-          :disabled="stopStreamLoading"
-          color="teal"
-          variant="tonal"
-          @click="stopMoneyStreaming"
-        >
-          Stop Paying
-        </v-btn>
-      </v-banner-actions>
-    </v-banner>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <!----------- END Start Paying Dialog ---------->   
+
+
+
+    <v-btn
+      v-if="isStreaming"
+      :loading="stopStreamLoading"
+      :disabled="stopStreamLoading"
+      prepend-icon="mdi-stop-circle"
+      size="small"
+      color="pink-darken-2"
+      variant="flat"
+      @click="stopMoneyStreaming"
+    >
+      Stop Paying
+    </v-btn>
+
 
   </div>
 </template>
@@ -80,17 +125,21 @@
 import { ref, reactive } from "vue";
 import { Framework } from "@superfluid-finance/sdk-core";
 import Preloader from "@/components/ui/Preloader.vue"
+import UserSummary from "@/components/ui/UserSummary.vue"
 import { ethers } from 'ethers';
+import BigNumber from "bignumber.js";
+import * as Web3 from 'web3'
 export default {
   props: {
     recipientAddress: { type: String },
     superTokenName: { type: String },
-    flowRate: { type: Number, default: 1 },
+    pricePerHour: { type: Number },
     keepCheckingStatus: { type: Boolean, default: false },
     statusCheckingInterval: { type: Number, default: 5000 },
   },
   setup() {
     const loading = ref(true);
+    const dialogStartPaying = ref(false);
     const startStreamLoading = ref(false);
     const stopStreamLoading = ref(false);
     const isStreaming = ref(false);
@@ -102,12 +151,14 @@ export default {
     const chainId = ref(null);
     const superToken = reactive({});
     const currentFlow = reactive({});
+    const flowRate = ref(null);
     const tokenBalanceReadable = ref(null);
     const checkStatusInterval = ref(null);
-    return { loading, startStreamLoading, stopStreamLoading, isStreaming, SfFramework, provider, signer, signerAddress, superSigner, chainId, superToken, currentFlow, tokenBalanceReadable, checkStatusInterval };
+    return { loading, dialogStartPaying, startStreamLoading, stopStreamLoading, isStreaming, SfFramework, provider, signer, signerAddress, superSigner, chainId, superToken, currentFlow, flowRate, tokenBalanceReadable, checkStatusInterval };
   },
   components: {
-    Preloader
+    Preloader,
+    UserSummary
   },  
   computed: {
   },  
@@ -131,6 +182,14 @@ export default {
       console.log("signerAddress: ", signerAddress);
       this.chainId = await window.ethereum.request({ method: "eth_chainId" });
       // console.log("ChainId in Number: ", Number(this.chainId));
+
+
+      if (this.pricePerHour !== null) {
+        this.flowRate = this.pricePerHour / 3600
+      }
+      else {
+        this.flowRate = null
+      }
 
       const SfFramework = await Framework.create({
         chainId: Number(this.chainId),
@@ -212,10 +271,12 @@ export default {
       console.log(this.signerAddress, this.recipientAddress, this.flowRate);
       try {
 
+        const tmpNum = this.flowRate.toFixed(8);
+        const weiValue = ethers.utils.parseEther(tmpNum.toString());
         const createFlowOperation = this.superToken.createFlow({
           sender: this.signerAddress,
           receiver: this.recipientAddress,
-          flowRate: this.flowRate
+          flowRate: weiValue,
           // userData?: string
         });
 

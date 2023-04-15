@@ -1,7 +1,8 @@
 <template>
 <span>
   <v-chip 
-    class="my-1" 
+    class="my-1"
+    size="small"
     v-if="!isNullAddress" 
     :id="'user-summary-' + address"
     :to="{ name: 'User', params: { userAddress: address } }"
@@ -34,6 +35,7 @@ export default {
     markself: { type: Boolean, default: false },
     frontdigits: { type: Number, default: 4 },
     enddigits: { type: Number, default: 4 },
+    variant: { type: String, default: 'default' },
   },
   data () {
     return {}

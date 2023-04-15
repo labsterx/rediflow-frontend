@@ -43,15 +43,6 @@ export const config = {
       80001: [ 'fUSDCx', 'fTUSDx', 'fDAIx' ],
     }
   },
-  featuredVideos: [
-    {
-      assetId: "c3480487-dd69-41bb-a6ee-b55aeed2b184",
-      created: "2023-04-11T06:14:19.253Z",
-      isReady: true,
-      name: "My Vlog",
-      ownerAddress: "0x06a6b65d93cdd5026729973d835716ba0450b002",
-    }
-  ],
   network: {
     1: {
       id: 1,
@@ -60,14 +51,16 @@ export const config = {
       accountURL: 'https://etherscan.io/address/',
       tokenURL: 'https://etherscan.io/token/',
       etherscanApiURL: 'https://api.etherscan.io/',
+      superfluidSubgrahApiURL: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/superfluid-mainnet',
     },
     5: {
       id: 5,
-      name: 'Ropsten Testnet',
+      name: 'Goerli Testnet',
       txURL: 'https://goerli.etherscan.io/tx/',
       accountURL: 'https://goerli.etherscan.io/address/',
       tokenURL: 'https://goerli.etherscan.io/token/',
       etherscanApiURL: 'https://api-goerli.etherscan.io/',
+      superfluidSubgrahApiURL: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/superfluid-goerli',
     },
     137: {
       id: 137,
@@ -75,6 +68,7 @@ export const config = {
       txURL: 'https://polygonscan.com/tx/',
       accountURL: 'https://polygonscan.com/address/',
       tokenURL: 'https://polygonscan.com/token/',
+      superfluidSubgrahApiURL: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/superfluid-matic',
       // etherscanApiURL: 'https://api-kovan.etherscan.io/',
     },
     80001: {
@@ -84,6 +78,7 @@ export const config = {
       accountURL: 'https://mumbai.polygonscan.com/address/',
       tokenURL: 'https://mumbai.polygonscan.com/token/',
       // etherscanApiURL: 'https://api-kovan.etherscan.io/',
+      superfluidSubgrahApiURL: 'https://api.thegraph.com/subgraphs/name/superfluid-finance/superfluid-mumbai',
     },    
   },
 }
