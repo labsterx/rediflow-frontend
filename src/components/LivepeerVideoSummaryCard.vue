@@ -4,7 +4,7 @@
 
     <v-card
       class="video-summary-card mx-auto my-2"
-      :href="`/app/video/${assetId}`"
+      :to="{ name: 'Video', params: { assetId: assetId } }"
     >
 
         <v-img
