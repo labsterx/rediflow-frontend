@@ -1,4 +1,4 @@
-# Frotend code for RediFlow
+# Frontend code for RediFlow
 
 This is the frontend code for RediFlow, a project created during the ETHGlobal Tokyo hackathon. This project uses Superfluid for managing payment, uses Livepeer for managing payment and uses Subgraph for onchain activitiy lookup. Also, MetaMask is used for login. 
 
